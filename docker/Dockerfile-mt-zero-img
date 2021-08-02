@@ -1,0 +1,5 @@
+FROM alpine
+
+WORKDIR /app
+RUN apk update && apk add tzdata && \
+    apk add busybox-extras && apk add bash && apk add curl

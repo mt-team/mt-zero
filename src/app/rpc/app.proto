@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package app;
+
+message GetAppInfoReq{
+    string platform = 1;    // 客户端平台 iOS，android， wxma，h5
+    string version = 2;     // 客户端版本
+}
+
+enum UpdateType{
+    None = 0;    // 不需要更新
+    Soft = 1;    // 软更，用户可选不更新
+    Force = 2;   // 强更，用户一定要更新才能使用
+}
+message GetAppInfoResp{
+    string version = 1;     // 当前最新版本
+    string desc = 2;        // 版本更新内容
+    string url = 3;         // cdn自有包更新地址
+    UpdateType type = 4;    // 更新类型
+}
+
+service App {
+    rpc GetAppInfo(GetAppInfoReq) returns(GetAppInfoResp);
+}

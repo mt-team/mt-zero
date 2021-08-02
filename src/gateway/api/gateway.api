@@ -1,0 +1,18 @@
+///////////////////////// app /////////////////////////
+type AppReq {
+}
+type AppResp {
+	Version string `json:"version"`
+	Desc    string `json:"desc"`
+	Url     string `json:"url"`
+	Type    int8   `json:"type,options=0|1|2"` // 0:不更新，1:软更，2:强更
+}
+///////////////////////// app /////////////////////////
+
+service gateway {
+	///////////////////////// app /////////////////////////
+	@handler AppInfoHandler
+	post /app/v1/info(AppReq) returns (AppResp);
+	///////////////////////// app /////////////////////////
+	
+}

@@ -1,0 +1,48 @@
+version: '3'
+services:
+  etcd:
+    image: quay.io/coreos/etcd
+    container_name: etcd
+    ports:
+      - 2379:2379
+      - 2380:2380
+    restart: always
+    environment:
+      - ETCDCTL_API=3
+    command:
+      - /usr/local/bin/etcd
+      - --data-dir=/etcd-data
+      - --name
+      - node1
+      - --initial-advertise-peer-urls
+      - http://10.0.0.134:2380
+      - --listen-peer-urls
+      - http://0.0.0.0:2380
+      - --advertise-client-urls
+      - http://10.0.0.134:2379
+      - --listen-client-urls
+      - http://0.0.0.0:2379
+      - --initial-cluster
+      - node1=http://10.0.0.134:2380
+  #redis:
+  #  image: redis
+  #  ports:
+  #    - "6379:6379"
+  #mysql:
+  #  image: mysql:5.7.16
+  #  container_name: mysql
+  #  restart: always
+  #  expose:
+  #   - "3306"
+  #  ports:
+  #   - "3306:3306"
+  #  environment:
+  #    MYSQL_USER: "root"
+  #    # So you don't have to use root, but you can if you like
+  #    MYSQL_ROOT_PASSWORD: "root"
+  #    # MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  #    MYSQL_DATABASE: homework
+  #mongo:
+  #  image: mongo:4.0
+  #  ports:
+  #   - "27017:27017"
