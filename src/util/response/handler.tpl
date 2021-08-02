@@ -11,7 +11,7 @@ func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		{{if .HasRequest}}var req types.{{.RequestType}}
 		if err := httpx.Parse(r, &req); err != nil {
-			response.Response(w, err)
+			response.Response(w, response.ErrInvalidArgs)
 			return
 		}{{end}}
 

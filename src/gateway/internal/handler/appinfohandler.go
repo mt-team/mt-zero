@@ -15,7 +15,7 @@ func AppInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.AppReq
 		if err := httpx.Parse(r, &req); err != nil {
-			response.Response(w, err)
+			response.Response(w, response.ErrInvalidArgs)
 			return
 		}
 
