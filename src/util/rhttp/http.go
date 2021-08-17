@@ -20,9 +20,25 @@ func init() {
 	StatusOK = http.StatusOK
 }
 
-type Client struct {
-	*http.Client
-}
+type (
+	Client struct {
+		*http.Client
+	}
+
+	Header struct {
+		Key string
+		Val string
+	}
+
+	Option struct {
+		Url     string     `json:"url"`
+		Method  string     `json:"method"`
+		Type    string     `json:"type"`
+		Data    string     `json:"data"`
+		Headers []*Header  `json:"headers"`
+		UrlVal  url.Values `json:"url_val"`
+	}
+)
 
 // 获取httpclient
 func NewHttpClient(timeout int) *Client {
