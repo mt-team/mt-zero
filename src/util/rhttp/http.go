@@ -52,7 +52,7 @@ func NewHttpClient(timeout int) *Client {
 	return client
 }
 
-func (c *Client) Call(option *Option) (*http.Response, error) {
+func (c *Client) Call(option *Option) ([]byte, error) {
 	var err error
 
 	var resp *http.Response
@@ -66,7 +66,7 @@ func (c *Client) Call(option *Option) (*http.Response, error) {
 	default:
 		req, err := http.NewRequest(option.Method, option.Url, strings.NewReader(option.Data))
 		if err != nil {
-			logx.Errorf("FetchWithJson: http.NewRequest fail, err=%v", err)
+			logx.Errorf("Client.Call: http.NewRequest fail, err=%v", err)
 			return nil, err
 		}
 		if len(option.Headers) > 0 {
@@ -78,14 +78,10 @@ func (c *Client) Call(option *Option) (*http.Response, error) {
 	}
 
 	if err != nil {
+		logx.Errorf("Client.Call: json.Unmarshal fail, err=%v", err)
 		return nil, err
 	}
 
-	return resp, nil
-}
-
-func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, error) {
-	resp, err := c.Call(option)
 	if resp != nil {
 		defer resp.Body.Close()
 	}
@@ -94,22 +90,32 @@ func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, e
 		return nil, err
 	}
 
-	logx.Infof("FetchWithJson: http status, code=%d", resp.StatusCode)
+	logx.Infof("Client.Call: http status, code=%d", resp.StatusCode)
 
 	if resp.StatusCode != http.StatusOK {
-		logx.Errorf("FetchWithJson: http status not ok, code=%d", resp.StatusCode)
+		logx.Errorf("Client.Call: http status not ok, code=%d", resp.StatusCode)
 		return nil, err
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logx.Errorf("FetchWithJson: read fail, err=%v", err)
+		logx.Errorf("Client.Call: read fail, err=%v", err)
+		return nil, err
+	}
+
+	return body, nil
+}
+
+func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, error) {
+	resp, err := c.Call(option)
+	if err != nil {
+		logx.Errorf("Client.FetchWithJson: read fail, err=%v", err)
 		return nil, err
 	}
 
 	var ret = reflect.New(typ)
-	if err := json.Unmarshal(body, ret.Interface()); err != nil {
-		logx.Errorf("FetchWithJson: json.Unmarshal fail, err=%v", err)
+	if err := json.Unmarshal(resp, ret.Interface()); err != nil {
+		logx.Errorf("Client.FetchWithJson: json.Unmarshal fail, err=%v", err)
 		return nil, err
 	}
 
@@ -118,25 +124,10 @@ func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, e
 
 func (c *Client) FetchWithString(option *Option) (string, error) {
 	resp, err := c.Call(option)
-	if resp != nil {
-		defer resp.Body.Close()
-	}
-
 	if err != nil {
-		return "", err
-	}
-	logx.Infof("FetchWithString: http status, code=%d", resp.StatusCode)
-
-	if resp.StatusCode != http.StatusOK {
-		logx.Errorf("FetchWithString: http status not ok, code=%d", resp.StatusCode)
+		logx.Errorf("Client.FetchWithString: read fail, err=%v", err)
 		return "", err
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		logx.Errorf("FetchWithString: read fail, err=%v", err)
-		return "", err
-	}
-
-	return string(body), nil
+	return string(resp), nil
 }
