@@ -40,7 +40,7 @@ type (
 	}
 )
 
-// 获取httpclient
+// NewHttpClient 获取httpclient
 func NewHttpClient(timeout int) *Client {
 	client := &Client{
 		&http.Client{
@@ -52,7 +52,7 @@ func NewHttpClient(timeout int) *Client {
 	return client
 }
 
-func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, error) {
+func (c *Client) Call(option *Option) (*http.Response, error) {
 	var err error
 
 	var resp *http.Response
@@ -76,6 +76,16 @@ func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, e
 		}
 		resp, err = c.Do(req)
 	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, error) {
+	resp, err := c.Call(option)
 	if resp != nil {
 		defer resp.Body.Close()
 	}
@@ -104,4 +114,29 @@ func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, e
 	}
 
 	return ret.Interface(), nil
+}
+
+func (c *Client) FetchWithString(option *Option) (string, error) {
+	resp, err := c.Call(option)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
+
+	if err != nil {
+		return "", err
+	}
+	logx.Infof("FetchWithString: http status, code=%d", resp.StatusCode)
+
+	if resp.StatusCode != http.StatusOK {
+		logx.Errorf("FetchWithString: http status not ok, code=%d", resp.StatusCode)
+		return "", err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logx.Errorf("FetchWithString: read fail, err=%v", err)
+		return "", err
+	}
+
+	return string(body), nil
 }
