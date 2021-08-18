@@ -22,6 +22,6 @@ func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
             return
         }
 
-        response.Response(w, resp)
+        {{if .HasResp}}response.Response(w, resp){{else}}response.Response(w, nil){{end}}
 	}
 }
