@@ -35,7 +35,7 @@ type (
 		Method  string     `json:"method"`
 		Type    string     `json:"type"`
 		Data    string     `json:"data"`
-		Headers []*Header  `json:"headers"`
+		Headers []Header  `json:"headers"`
 		UrlVal  url.Values `json:"url_val"`
 	}
 )
