@@ -59,12 +59,15 @@ func (c *Client) Call(option *Option) ([]byte, error) {
 	switch option.Method {
 	case http.MethodPost:
 		resp, err = c.Post(option.Url, option.Type, strings.NewReader(option.Data))
+        break
 	case http.MethodGet:
 		resp, err = c.Get(option.Url)
+        break
 	case "FORM":
 		resp, err = c.PostForm(option.Url, option.UrlVal)
+        break
 	default:
-		req, reqErr := http.NewRequest(option.Method, option.Url, strings.NewReader(option.Data))
+		req, reqErr := http.NewRequest(strings.ToUpper(option.Method, option.Url, strings.NewReader(option.Data))
 		if reqErr != nil {
 			logx.Errorf("Client.Call: http.NewRequest fail, err=%v", reqErr)
 			return nil, reqErr
