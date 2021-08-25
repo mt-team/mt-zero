@@ -64,10 +64,10 @@ func (c *Client) Call(option *Option) ([]byte, error) {
 	case "FORM":
 		resp, err = c.PostForm(option.Url, option.UrlVal)
 	default:
-		req, err := http.NewRequest(option.Method, option.Url, strings.NewReader(option.Data))
-		if err != nil {
-			logx.Errorf("Client.Call: http.NewRequest fail, err=%v", err)
-			return nil, err
+		req, reqErr := http.NewRequest(option.Method, option.Url, strings.NewReader(option.Data))
+		if reqErr != nil {
+			logx.Errorf("Client.Call: http.NewRequest fail, err=%v", reqErr)
+			return nil, reqErr
 		}
 		if len(option.Headers) > 0 {
 			for _, header := range option.Headers {
@@ -86,10 +86,6 @@ func (c *Client) Call(option *Option) ([]byte, error) {
 		defer resp.Body.Close()
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
 	logx.Infof("Client.Call: http status, code=%d", resp.StatusCode)
 
 	if resp.StatusCode != http.StatusOK {
@@ -106,28 +102,49 @@ func (c *Client) Call(option *Option) ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) FetchWithJson(option *Option, typ reflect.Type) (interface{}, error) {
-	resp, err := c.Call(option)
+func (c *Client) FetchWithJson(ctx context.Context, option *Option, typ interface{}) error {
+	resp, err := c.Call(ctx, option)
 	if err != nil {
 		logx.Errorf("Client.FetchWithJson: read fail, err=%v", err)
-		return nil, err
+		return err
 	}
 
-	var ret = reflect.New(typ)
-	if err := json.Unmarshal(resp, ret.Interface()); err != nil {
+	if err := json.Unmarshal(resp, typ); err != nil {
 		logx.Errorf("Client.FetchWithJson: json.Unmarshal fail, err=%v", err)
-		return nil, err
+		return err
 	}
 
-	return ret.Interface(), nil
+	return nil
 }
 
-func (c *Client) FetchWithString(option *Option) (string, error) {
-	resp, err := c.Call(option)
+func (c *Client) FetchWithString(ctx context.Context, option *Option) (string, error) {
+	resp, err := c.Call(ctx, option)
 	if err != nil {
 		logx.Errorf("Client.FetchWithString: read fail, err=%v", err)
 		return "", err
 	}
 
 	return string(resp), nil
+}
+
+func (c *Client) PostFetchWithJson(ctx context.Context, option *Option, typ interface{}) error {
+	option.Method = "post"
+	option.Headers = []Header{
+		{
+			Key: "Content-Type",
+			Val: "application/json",
+		},
+	}
+	return c.FetchWithJson(ctx, option, typ)
+}
+
+func (c *Client) GetFetchWithJson(ctx context.Context, option *Option, typ interface{}) error {
+	option.Method = "get"
+	option.Headers = []Header{
+		{
+			Key: "Content-Type",
+			Val: "application/json",
+		},
+	}
+	return c.FetchWithJson(ctx, option, typ)
 }
