@@ -15,33 +15,35 @@ type DemoObj struct {
 }
 
 var cli = NewHttpClient(10)
+var addr = "127.0.0.1:20001"
+var _ = mockHttp(addr)
 
 func TestClient_FetchWithJson(t *testing.T) {
 	a := assert.New(t)
 	// 启动mock http服务
-	go mockHttp()
 
-	obj, err := cli.FetchWithJson(&Option{
-		Url:    "http://127.0.0.1:8080/http/mock/json",
+	ctx := context.Background()
+
+	var demoObj DemoObj
+	err := cli.FetchWithJson(ctx, &Option{
+		Url:    fmt.Sprintf("http://%s/http/mock/json", addr),
 		Method: "put",
-	}, reflect.TypeOf(DemoObj{}))
+	}, &demoObj)
 	if err != nil {
 		t.Errorf("FetchWithJson: fail, err=%v", err)
 	}
 
-	demoObj := obj.(*DemoObj)
 	a.Equal("zhang san", demoObj.Name)
 	a.Equal(1, demoObj.Sex)
-
 }
 
 func TestClient_FetchWithString(t *testing.T) {
 	a := assert.New(t)
-	// 启动mock http服务
-	go mockHttp()
 
-	str, err := cli.FetchWithString(&Option{
-		Url:    "http://127.0.0.1:8080/http/mock/string",
+	ctx := context.Background()
+
+	str, err := cli.FetchWithString(ctx, &Option{
+		Url:    fmt.Sprintf("http://%s/http/mock/string", addr),
 		Method: http.MethodGet,
 	})
 	if err != nil {
@@ -51,7 +53,9 @@ func TestClient_FetchWithString(t *testing.T) {
 	a.Equal("Hello World", str)
 }
 
-func mockHttp() {
+func mockHttp(addr string) *http.Server {
+	srv := &http.Server{Addr: addr}
+
 	http.HandleFunc("/http/mock/json", func(w http.ResponseWriter, r *http.Request) {
 		demoObj := DemoObj{
 			Name: "zhang san",
@@ -67,5 +71,12 @@ func mockHttp() {
 		w.Write([]byte("Hello World"))
 	})
 
-	http.ListenAndServe("127.0.0.1:8080", nil)
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Printf("Httpserver: ListenAndServe() error: %s", err)
+		}
+
+	}()
+
+	return srv
 }
