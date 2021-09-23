@@ -16,6 +16,8 @@ func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
 		}{{end}}
 
 		l := logic.New{{.LogicType}}(r.Context(), ctx)
+		span := c.Value(tracespec.TracingKey).(tracespec.Trace)
+        w.Header().Set("X-Trace-ID", span.TraceId())
 		{{if .HasResp}}resp, {{end}}err := l.{{.Call}}({{if .HasRequest}}req{{end}})
 		if err != nil {
             response.Response(w, err)
