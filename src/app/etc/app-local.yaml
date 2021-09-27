@@ -1,6 +1,6 @@
 Name: app.rpc
 ListenOn: 127.0.0.1:8080
-Mode: pro
+Mode: dev
 Etcd:
   Hosts:
   - 127.0.0.1:2379
