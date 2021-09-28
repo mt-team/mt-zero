@@ -1,0 +1,31 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+///////////////////////// app /////////////////////////
+type AppReq {
+    Plt string `json:"plt,optional,options=android|iOS"`
+    Ver string `json:"ver,optional"`
+}
+type AppResp {
+    Version string `json:"version"`
+    Desc    string `json:"desc"`
+    Url     string `json:"url"`
+    Type    int8   `json:"type,options=0|1|2"` // 0:不更新，1:软更，2:强更
+    Env     string `json:"env,options=dev|test|pro"`
+}
+///////////////////////// app /////////////////////////
+
+service gateway {
+    ///////////////////////// app /////////////////////////
+    @handler AppInfoHandler
+    post /app/v1/info(AppReq) returns (AppResp);
+    ///////////////////////// app /////////////////////////
+
+}

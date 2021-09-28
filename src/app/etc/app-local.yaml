@@ -1,7 +1,14 @@
 Name: app.rpc
-ListenOn: 127.0.0.1:8080
+ListenOn: :11020
+Verbose: true
 Mode: dev
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: app.rpc
+Mysql:
+  DataSource: root:root@tcp(10.0.0.149:3306)/app?charset=utf8mb4&parseTime=True&loc=Local
+CacheRedis:
+  - Host: 10.0.0.149:6379
+    Pass: "123456"
+    Type: node

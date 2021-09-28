@@ -1,4 +1,4 @@
-package response
+package bizResponse
 
 import (
 	"context"

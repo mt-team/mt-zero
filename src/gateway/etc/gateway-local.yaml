@@ -1,6 +1,7 @@
 Name: gateway
 Host: 0.0.0.0
 Port: 11001
+Verbose: true
 Mode: dev
 AppRpc:
   Etcd:

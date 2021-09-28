@@ -4,21 +4,21 @@ import (
 	"context"
 	"net/http"
 
-	"ruquan/src/gateway/util"
 	"ruquan/src/gateway/internal/logic"
 	"ruquan/src/gateway/internal/svc"
 	"ruquan/src/gateway/internal/types"
-	"ruquan/src/util/response"
+	"ruquan/src/gateway/util"
+	bizResponse "ruquan/src/util/response"
 
-	"github.com/tal-tech/go-zero/rest/httpx"
 	"github.com/tal-tech/go-zero/core/trace/tracespec"
+	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
 func AppInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.AppReq
 		if err := httpx.Parse(r, &req); err != nil {
-			response.Response(w, response.ErrInvalidArgs)
+			bizResponse.Response(w, err)
 			return
 		}
 
@@ -31,10 +31,10 @@ func AppInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		l := logic.NewAppInfoLogic(r.Context(), ctx)
 		resp, err := l.AppInfo(req)
 		if err != nil {
-			response.Response(w, err)
+			bizResponse.Response(w, err)
 			return
 		}
 
-		response.Response(w, resp)
+		bizResponse.Response(w, resp)
 	}
 }

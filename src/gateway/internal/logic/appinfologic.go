@@ -3,8 +3,10 @@ package logic
 import (
 	"context"
 
+	"ruquan/src/app/app"
 	"ruquan/src/gateway/internal/svc"
 	"ruquan/src/gateway/internal/types"
+	bizResponse "ruquan/src/util/response"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
@@ -24,7 +26,20 @@ func NewAppInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) AppInfoLog
 }
 
 func (l *AppInfoLogic) AppInfo(req types.AppReq) (*types.AppResp, error) {
-	// todo: add your logic here and delete this line
+	resp, err := l.svcCtx.AppRpc.GetAppInfo(l.ctx, &app.GetAppInfoReq{
+		Platform: req.Plt,
+		Version:  req.Ver,
+	})
+	if err != nil {
+		l.Logger.Errorf("AppInfo err %v", err)
+		return nil, bizResponse.ErrAppCtl
+	}
 
-	return &types.AppResp{}, nil
+	return &types.AppResp{
+		Version: resp.Version,
+		Desc:    resp.Desc,
+		Url:     resp.Url,
+		Type:    int8(resp.Type),
+		Env:     resp.Env,
+	}, nil
 }

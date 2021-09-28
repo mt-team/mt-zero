@@ -3,7 +3,8 @@ package handler
 import (
 	"net/http"
 
-    "ruquan/src/util/response"
+    "ruquan/src/gateway/internal/util"
+    bizResponse "ruquan/src/util/response"
 	{{.ImportPackages}}
 )
 
@@ -11,19 +12,23 @@ func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		{{if .HasRequest}}var req types.{{.RequestType}}
 		if err := httpx.Parse(r, &req); err != nil {
-			response.Response(w, response.ErrInvalidArgs)
+			bizResponse.Response(w, err)
 			return
 		}{{end}}
 
-		l := logic.New{{.LogicType}}(r.Context(), ctx)
-		span := c.Value(tracespec.TracingKey).(tracespec.Trace)
+		userUuid := util.GetHeaderUserUuid(r)
+        c := context.WithValue(r.Context(), "userUuid", userUuid)
+        c = util.CpoyHeaderToCtx(c, r)
+        span := c.Value(tracespec.TracingKey).(tracespec.Trace)
         w.Header().Set("X-Trace-ID", span.TraceId())
+
+		l := logic.New{{.LogicType}}(r.Context(), ctx)
 		{{if .HasResp}}resp, {{end}}err := l.{{.Call}}({{if .HasRequest}}req{{end}})
 		if err != nil {
-            response.Response(w, err)
+            bizResponse.Response(w, err)
             return
         }
 
-        {{if .HasResp}}response.Response(w, resp){{else}}response.Response(w, nil){{end}}
+        bizResponse.Response(w, resp)
 	}
 }

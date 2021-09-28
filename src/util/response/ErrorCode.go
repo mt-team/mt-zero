@@ -1,4 +1,4 @@
-package response
+package bizResponse
 
 import (
 	"context"
@@ -14,6 +14,7 @@ type BizResponse struct {
 	Message    string      `json:"message"`
 	Time       int64       `json:"time,omitempty"`
 	Data       interface{} `json:"data,omitempty"`
+	ErrorIndex string      `json:"errorIndex,omitempty"`
 	grpcStatus error
 }
 
@@ -27,6 +28,10 @@ func newBizResponse(code int, msg string) *BizResponse {
 		Message:    msg,
 		Time:       time.Now().Unix(),
 		grpcStatus: status.Error(codes.Code(code), msg),
+	}
+
+	if code != 0 {
+		resp.ErrorIndex = fmt.Sprintf("error_index_%d", code)
 	}
 
 	return resp
@@ -106,19 +111,16 @@ var (
 	ErrUnknown = newBizResponse(-1, "系统繁忙，此时请开发者稍候再试")
 
 	// 20xxx 公共参数验证
-	ErrInvalidArgs = newBizResponse(20002, "参数错误，换个姿势再来一次吧")
+	ErrInvalidArgs    = newBizResponse(20002, "参数错误，换个姿势再来一次吧")
+	ErrInternalFailed = newBizResponse(20003, "服务器正在开小差呢，请稍后重试")
+	ErrClientCancel   = newBizResponse(20004, "服务连接断开了, 请稍后重试")
+	ErrDeadlineExceed = newBizResponse(20005, "服务器繁忙，请稍候重试")
 
 	// 50xxx 音视频会议相关错误
 	ErrTXMeetingInfo = newBizResponse(50001, "会议信息请求错误")
 
 	// 90xxx app版本错误
 	ErrAppCtl = newBizResponse(90001, "版本信息错误，请重试")
-
-	ErrClientCancel = newBizResponse(499001, "服务连接断开了, 请稍后重试")
-
-	ErrInternalFailed = newBizResponse(500000, "服务器正在开小差呢，请稍后重试")
-
-	ErrDeadlineExceed = newBizResponse(500004, "服务器繁忙，请稍候重试")
 )
 
 var (

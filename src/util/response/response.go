@@ -1,8 +1,9 @@
-package response
+package bizResponse
 
 import (
 	"net/http"
 
+	"github.com/tal-tech/go-zero/core/logx"
 	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
@@ -13,10 +14,12 @@ func Response(w http.ResponseWriter, resp interface{}) {
 			break
 		}
 		httpx.OkJson(w, err)
+		logx.Errorf("%v", err)
 		return
 	case error:
 		err = ErrUnknown
 		httpx.OkJson(w, err)
+		logx.Errorf("%v", err)
 		return
 	}
 

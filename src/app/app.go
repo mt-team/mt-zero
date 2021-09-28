@@ -8,7 +8,7 @@ import (
 	"ruquan/src/app/internal/config"
 	"ruquan/src/app/internal/server"
 	"ruquan/src/app/internal/svc"
-	"ruquan/src/util/response"
+	bizResponse "ruquan/src/util/response"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/zrpc"
@@ -28,9 +28,9 @@ func main() {
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		app.RegisterAppServer(grpcServer, srv)
 	})
-
-	s.AddUnaryInterceptors(response.RecoveryInterceptor)
-
+	s.AddUnaryInterceptors(
+		bizResponse.RecoveryInterceptor,
+	)
 	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)

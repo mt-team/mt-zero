@@ -2,6 +2,8 @@
 package types
 
 type AppReq struct {
+	Plt string `json:"plt,optional,options=android|iOS"`
+	Ver string `json:"ver,optional"`
 }
 
 type AppResp struct {
@@ -9,4 +11,5 @@ type AppResp struct {
 	Desc    string `json:"desc"`
 	Url     string `json:"url"`
 	Type    int8   `json:"type,options=0|1|2"` // 0:不更新，1:软更，2:强更
+	Env     string `json:"env,options=dev|test|pro"`
 }

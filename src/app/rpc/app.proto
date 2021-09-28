@@ -17,6 +17,7 @@ message GetAppInfoResp{
     string desc = 2;        // 版本更新内容
     string url = 3;         // cdn自有包更新地址
     UpdateType type = 4;    // 更新类型
+    string env = 5;         // 环境
 }
 
 service App {
