@@ -1,11 +1,11 @@
 package rhttp
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"reflect"
 	"strings"
 	"time"
 
@@ -35,7 +35,7 @@ type (
 		Method  string     `json:"method"`
 		Type    string     `json:"type"`
 		Data    string     `json:"data"`
-		Headers []Header  `json:"headers"`
+		Headers []Header   `json:"headers"`
 		UrlVal  url.Values `json:"url_val"`
 	}
 )
@@ -52,22 +52,22 @@ func NewHttpClient(timeout int) *Client {
 	return client
 }
 
-func (c *Client) Call(option *Option) ([]byte, error) {
+func (c *Client) Call(ctx context.Context, option *Option) ([]byte, error) {
 	var err error
 
 	var resp *http.Response
 	switch option.Method {
 	case http.MethodPost:
-		resp, err = c.Post(option.Url, option.Type, strings.NewReader(option.Data))
-        break
+		resp, err = c.Client.Post(option.Url, option.Type, strings.NewReader(option.Data))
+		break
 	case http.MethodGet:
-		resp, err = c.Get(option.Url)
-        break
+		resp, err = c.Client.Get(option.Url)
+		break
 	case "FORM":
 		resp, err = c.PostForm(option.Url, option.UrlVal)
-        break
+		break
 	default:
-		req, reqErr := http.NewRequest(strings.ToUpper(option.Method, option.Url, strings.NewReader(option.Data))
+		req, reqErr := http.NewRequest(strings.ToUpper(option.Method), option.Url, strings.NewReader(option.Data))
 		if reqErr != nil {
 			logx.Errorf("Client.Call: http.NewRequest fail, err=%v", reqErr)
 			return nil, reqErr
@@ -77,7 +77,7 @@ func (c *Client) Call(option *Option) ([]byte, error) {
 				req.Header.Set(header.Key, header.Val)
 			}
 		}
-		resp, err = c.Do(req)
+		resp, err = c.Client.Do(req)
 	}
 
 	if err != nil {

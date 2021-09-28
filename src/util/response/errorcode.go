@@ -14,7 +14,6 @@ type BizResponse struct {
 	Message    string      `json:"message"`
 	Time       int64       `json:"time,omitempty"`
 	Data       interface{} `json:"data,omitempty"`
-	ErrorIndex string      `json:"errorIndex,omitempty"`
 	grpcStatus error
 }
 
@@ -28,10 +27,6 @@ func newBizResponse(code int, msg string) *BizResponse {
 		Message:    msg,
 		Time:       time.Now().Unix(),
 		grpcStatus: status.Error(codes.Code(code), msg),
-	}
-
-	if code != 0 {
-		resp.ErrorIndex = fmt.Sprintf("error_index_%d", code)
 	}
 
 	return resp
@@ -107,8 +102,7 @@ func FromError(err error) (resp *BizResponse) {
 var (
 	Success = newBizResponse(0, "")
 
-	// -1 未知错误
-	ErrUnknown = newBizResponse(-1, "系统繁忙，此时请开发者稍候再试")
+	ErrUnknown = newBizResponse(-1, "系统繁忙，此时请开发者稍候再试") // -1 未知错误
 
 	// 20xxx 公共参数验证
 	ErrInvalidArgs    = newBizResponse(20002, "参数错误，换个姿势再来一次吧")
