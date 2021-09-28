@@ -1,6 +1,8 @@
 package response
 
 import (
+	"context"
+	"fmt"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -8,9 +10,9 @@ import (
 )
 
 type BizResponse struct {
-	Code       int         `json:"errcode"`
-	Message    string      `json:"errmsg"`
-	Time       int64       `json:"time"`
+	Code       int         `json:"code"`
+	Message    string      `json:"message"`
+	Time       int64       `json:"time,omitempty"`
 	Data       interface{} `json:"data,omitempty"`
 	grpcStatus error
 }
@@ -19,18 +21,81 @@ func (b *BizResponse) Error() string {
 	return b.Message
 }
 
-// 用于从已定义的ErrResponse重载生成包含指定msg的BizResponse
-func (b *BizResponse) WithMessage(msg string) *BizResponse {
-	return newBizResponse(b.Code, msg)
-}
-
 func newBizResponse(code int, msg string) *BizResponse {
-	return &BizResponse{
+	resp := &BizResponse{
 		Code:       code,
 		Message:    msg,
 		Time:       time.Now().Unix(),
 		grpcStatus: status.Error(codes.Code(code), msg),
 	}
+
+	return resp
+}
+
+// WithMessage 用于从已定义的ErrResponse重载生成包含指定msg的BizResponse
+func (b *BizResponse) WithMessage(msg string) *BizResponse {
+	return newBizResponse(b.Code, msg)
+}
+
+// WithData 用于从已定义的ErrResponse重载生成包含指定返回的数据
+func (b *BizResponse) WithData(data interface{}) *BizResponse {
+	resp := newBizResponse(b.Code, b.Message)
+	resp.Data = data
+
+	return resp
+}
+
+func (b *BizResponse) EqualsTo(err error) bool {
+	if err == nil {
+		return false
+	}
+	c := FromError(err)
+	if c == nil {
+		return false
+	}
+	return (b == c) || (b.Code == c.Code && b.Message == c.Message)
+}
+
+func (b *BizResponse) generateKey() string {
+	return fmt.Sprintf("%d%v", b.Code, b.Message)
+}
+
+func FromError(err error) (resp *BizResponse) {
+	if err == nil {
+		return nil
+	}
+
+	switch err {
+	case context.Canceled:
+		return ErrClientCancel
+	case context.DeadlineExceeded:
+		return ErrDeadlineExceed
+	default:
+
+	}
+
+	s, ok := status.FromError(err)
+	if !ok {
+		if biz, ok := err.(*BizResponse); ok {
+			return biz
+		} else {
+			return ErrInternalFailed.WithMessage(err.Error())
+		}
+	}
+
+	if s.Code() < 100 { // grpc 通常都是100以内
+		switch s.Code() {
+		case codes.Canceled:
+			return ErrClientCancel
+		}
+		return ErrInternalFailed.WithMessage(err.Error())
+	}
+
+	if br, ok := pool[fmt.Sprintf("%d%v", s.Code(), s.Message())]; ok {
+		return br
+	}
+
+	return newBizResponse(int(s.Code()), s.Message())
 }
 
 // ********下面声明的变量需要在init()里放到pool里
@@ -48,4 +113,21 @@ var (
 
 	// 90xxx app版本错误
 	ErrAppCtl = newBizResponse(90001, "版本信息错误，请重试")
+
+	ErrClientCancel = newBizResponse(499001, "服务连接断开了, 请稍后重试")
+
+	ErrInternalFailed = newBizResponse(500000, "服务器正在开小差呢，请稍后重试")
+
+	ErrDeadlineExceed = newBizResponse(500004, "服务器繁忙，请稍候重试")
 )
+
+var (
+	pool = make(map[string]*BizResponse)
+)
+
+func init() {
+	pool[ErrUnknown.generateKey()] = ErrUnknown
+	pool[ErrClientCancel.generateKey()] = ErrClientCancel
+	pool[ErrInternalFailed.generateKey()] = ErrInternalFailed
+	pool[ErrDeadlineExceed.generateKey()] = ErrDeadlineExceed
+}
