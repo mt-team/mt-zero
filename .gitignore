@@ -1,12 +1,95 @@
-# Binaries for programs and plugins
+transaction-logs/
+# Created by .ignore support plugin (hsz.mobi)
+
+# IntelliJ project files
+.idea
+*.iws
+*.iml
+*.ipr
+.DS_Store
+
+# extension
 *.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-
-# Test binary, built with `go test -c`
 *.test
+*.prof
+*.pyc
+*.log
+*.lck
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### project ###
+target/
+logs
+
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.so
+test.go
+# Folders
+_obj
+_test
+/bin/
+/pkg/
+/run/
+/log/
+
+# vim
+[._]*.s[a-w][a-z]
+
+_Dockerfile*
+k8s-deploy/_gen*
+# Architecture specific extensions/prefixes
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+
+_testmain.go
+Makefile.linux
+
+# redis
+dump.rdb
+
+# swagger spec
+swagger.json
+swagger.yml
+
+# vscode
+.vscode
+
+# node
+node_modules/
+
+# docker
+Procfile*
+!Procfile.example
+.env
+docker-compose.yml
+
+# python
+.python-version
+.venv
+
+#gitbook
+_book
+
+
+
+
