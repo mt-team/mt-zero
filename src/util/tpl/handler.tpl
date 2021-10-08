@@ -1,11 +1,14 @@
 package handler
 
 import (
+    "context"
 	"net/http"
 
     "ruquan/src/gateway/internal/util"
     bizResponse "ruquan/src/util/response"
 	{{.ImportPackages}}
+	"github.com/tal-tech/go-zero/core/trace/tracespec"
+    "github.com/tal-tech/go-zero/rest/httpx"
 )
 
 func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
@@ -22,7 +25,7 @@ func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
         span := c.Value(tracespec.TracingKey).(tracespec.Trace)
         w.Header().Set("X-Trace-ID", span.TraceId())
 
-		l := logic.New{{.LogicType}}(r.Context(), ctx)
+		l := logic.New{{.LogicType}}(c, ctx)
 		{{if .HasResp}}resp, {{end}}err := l.{{.Call}}({{if .HasRequest}}req{{end}})
 		if err != nil {
             bizResponse.Response(w, err)
