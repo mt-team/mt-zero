@@ -8,7 +8,7 @@ package appclient
 import (
 	"context"
 
-	"ruquan/src/app/app"
+	"mtzero/src/app/app"
 
 	"github.com/tal-tech/go-zero/zrpc"
 )

@@ -1,8 +1,8 @@
 package svc
 
 import (
-	"ruquan/src/app/internal/config"
-	"ruquan/src/app/internal/model"
+	"mtzero/src/app/internal/config"
+	"mtzero/src/app/internal/model"
 
 	"github.com/tal-tech/go-zero/core/stores/sqlx"
 )

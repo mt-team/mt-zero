@@ -4,11 +4,11 @@ import (
 	"flag"
 	"fmt"
 
-	"ruquan/src/app/app"
-	"ruquan/src/app/internal/config"
-	"ruquan/src/app/internal/server"
-	"ruquan/src/app/internal/svc"
-	bizResponse "ruquan/src/util/response"
+	"mtzero/src/app/app"
+	"mtzero/src/app/internal/config"
+	"mtzero/src/app/internal/server"
+	"mtzero/src/app/internal/svc"
+	bizResponse "mtzero/src/util/response"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/zrpc"

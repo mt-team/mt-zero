@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"ruquan/src/gateway/internal/svc"
+	"mtzero/src/gateway/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
 )

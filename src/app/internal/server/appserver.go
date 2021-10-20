@@ -6,9 +6,9 @@ package server
 import (
 	"context"
 
-	"ruquan/src/app/app"
-	"ruquan/src/app/internal/logic"
-	"ruquan/src/app/internal/svc"
+	"mtzero/src/app/app"
+	"mtzero/src/app/internal/logic"
+	"mtzero/src/app/internal/svc"
 )
 
 type AppServer struct {

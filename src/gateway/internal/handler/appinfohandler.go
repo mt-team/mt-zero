@@ -4,11 +4,11 @@ import (
 	"context"
 	"net/http"
 
-	"ruquan/src/gateway/internal/logic"
-	"ruquan/src/gateway/internal/svc"
-	"ruquan/src/gateway/internal/types"
-	"ruquan/src/gateway/util"
-	bizResponse "ruquan/src/util/response"
+	"mtzero/src/gateway/internal/logic"
+	"mtzero/src/gateway/internal/svc"
+	"mtzero/src/gateway/internal/types"
+	"mtzero/src/gateway/util"
+	bizResponse "mtzero/src/util/response"
 
 	"github.com/tal-tech/go-zero/core/trace/tracespec"
 	"github.com/tal-tech/go-zero/rest/httpx"

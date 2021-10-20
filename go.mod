@@ -1,4 +1,4 @@
-module ruquan
+module mtzero
 
 go 1.15
 

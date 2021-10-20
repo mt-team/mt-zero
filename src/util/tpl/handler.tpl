@@ -4,8 +4,8 @@ import (
     "context"
 	"net/http"
 
-    "ruquan/src/gateway/internal/util"
-    bizResponse "ruquan/src/util/response"
+    "mtzero/src/gateway/internal/util"
+    bizResponse "mtzero/src/util/response"
 	{{.ImportPackages}}
 	"github.com/tal-tech/go-zero/core/trace/tracespec"
     "github.com/tal-tech/go-zero/rest/httpx"

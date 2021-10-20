@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"ruquan/src/gateway/internal/config"
-	"ruquan/src/gateway/internal/handler"
-	"ruquan/src/gateway/internal/svc"
+	"mtzero/src/gateway/internal/config"
+	"mtzero/src/gateway/internal/handler"
+	"mtzero/src/gateway/internal/svc"
 
 	"github.com/tal-tech/go-zero/core/conf"
 	"github.com/tal-tech/go-zero/rest"

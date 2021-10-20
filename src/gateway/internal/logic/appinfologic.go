@@ -3,10 +3,10 @@ package logic
 import (
 	"context"
 
-	"ruquan/src/app/app"
-	"ruquan/src/gateway/internal/svc"
-	"ruquan/src/gateway/internal/types"
-	bizResponse "ruquan/src/util/response"
+	"mtzero/src/app/app"
+	"mtzero/src/gateway/internal/svc"
+	"mtzero/src/gateway/internal/types"
+	bizResponse "mtzero/src/util/response"
 
 	"github.com/tal-tech/go-zero/core/logx"
 )
