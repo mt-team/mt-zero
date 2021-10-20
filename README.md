@@ -30,18 +30,14 @@ docker      容器化镜像文件
 
 ##初始化项目
 ```
-go env -w GO111MODULE=on
-go env -w GOPROXY=https://goproxy.cn,direct
-go mod download
-chmod -R 777 run.sh
-response模板调整
+请执行根目录 init.sh 脚本
 ```
 
 ##response模板调整
 ```
 go-zero的响应模板调整
 goctl template init
-cp src/util/response/handler.tpl ~/.goctl/api/handler.tpl
+cp src/util/tpl/handler.tpl ~/.goctl/api/handler.tpl
 ```
 
 ##make命令
