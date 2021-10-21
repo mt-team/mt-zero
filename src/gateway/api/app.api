@@ -23,6 +23,7 @@ type AppResp {
 ///////////////////////// app /////////////////////////
 
 @server(
+    group: app
     middleware: Trace // 路由中间件声明
 )
 service gateway {

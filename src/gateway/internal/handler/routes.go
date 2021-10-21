@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	app "mtzero/src/gateway/internal/handler/app"
 	"mtzero/src/gateway/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
@@ -17,7 +18,7 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/app/v1/info",
-					Handler: AppInfoHandler(serverCtx),
+					Handler: app.AppInfoHandler(serverCtx),
 				},
 			}...,
 		),

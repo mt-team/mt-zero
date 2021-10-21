@@ -1,10 +1,10 @@
-package handler
+package app
 
 import (
 	"context"
 	"net/http"
 
-	"mtzero/src/gateway/internal/logic"
+	"mtzero/src/gateway/internal/logic/app"
 	"mtzero/src/gateway/internal/svc"
 	"mtzero/src/gateway/internal/types"
 	"mtzero/src/gateway/util"
@@ -25,7 +25,7 @@ func AppInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		c := context.WithValue(r.Context(), "userUuid", userUuid)
 		c = util.CpoyHeaderToCtx(c, r)
 
-		l := logic.NewAppInfoLogic(c, ctx)
+		l := app.NewAppInfoLogic(c, ctx)
 		resp, err := l.AppInfo(req)
 		if err != nil {
 			bizResponse.Response(w, err)

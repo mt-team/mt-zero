@@ -1,10 +1,10 @@
-package handler
+package {{.LogicName}}
 
 import (
     "context"
 	"net/http"
 
-    "mtzero/src/gateway/internal/util"
+    "mtzero/src/gateway/util"
     bizResponse "mtzero/src/util/response"
 	{{.ImportPackages}}
     "github.com/tal-tech/go-zero/rest/httpx"
@@ -22,7 +22,7 @@ func {{.HandlerName}}(ctx *svc.ServiceContext) http.HandlerFunc {
         c := context.WithValue(r.Context(), "userUuid", userUuid)
         c = util.CpoyHeaderToCtx(c, r)
 
-		l := logic.New{{.LogicType}}(c, ctx)
+		l := {{.LogicName}}.New{{.LogicType}}(c, ctx)
 		{{if .HasResp}}resp, {{end}}err := l.{{.Call}}({{if .HasRequest}}req{{end}})
 		if err != nil {
             bizResponse.Response(w, err)
