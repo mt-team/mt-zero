@@ -10,7 +10,6 @@ import (
 	"mtzero/src/gateway/util"
 	bizResponse "mtzero/src/util/response"
 
-	"github.com/tal-tech/go-zero/core/trace/tracespec"
 	"github.com/tal-tech/go-zero/rest/httpx"
 )
 
@@ -25,10 +24,8 @@ func AppInfoHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		userUuid := util.GetHeaderUserUuid(r)
 		c := context.WithValue(r.Context(), "userUuid", userUuid)
 		c = util.CpoyHeaderToCtx(c, r)
-		span := c.Value(tracespec.TracingKey).(tracespec.Trace)
-		w.Header().Set("X-Trace-ID", span.TraceId())
 
-		l := logic.NewAppInfoLogic(r.Context(), ctx)
+		l := logic.NewAppInfoLogic(c, ctx)
 		resp, err := l.AppInfo(req)
 		if err != nil {
 			bizResponse.Response(w, err)

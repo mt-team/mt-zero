@@ -11,12 +11,15 @@ import (
 
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 	engine.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/app/v1/info",
-				Handler: AppInfoHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Trace},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/app/v1/info",
+					Handler: AppInfoHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 }

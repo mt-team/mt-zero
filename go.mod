@@ -13,8 +13,10 @@ require (
 	github.com/lib/pq v1.10.3 // indirect
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/stretchr/testify v1.7.0
-	github.com/tal-tech/go-zero v1.1.10
+	github.com/tal-tech/go-zero v1.2.2
 	github.com/viki-org/dnscache v0.0.0-20130720023526-c70c1f23c5d8
+	go.opentelemetry.io/otel v1.0.1
+	go.opentelemetry.io/otel/trace v1.0.1
 	go.uber.org/automaxprocs v1.4.0 // indirect
 	golang.org/x/tools v0.1.5 // indirect
 	google.golang.org/grpc v1.41.0

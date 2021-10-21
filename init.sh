@@ -1,6 +1,6 @@
 #goctl安装
-go get -u github.com/tal-tech/go-zero@v1.1.10
-go get github.com/tal-tech/go-zero/tools/goctl@v1.1.10
+go get -u github.com/tal-tech/go-zero
+go get github.com/tal-tech/go-zero/tools/goctl
 
 #项目go环境
 go env -w GO111MODULE=on

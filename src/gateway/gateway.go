@@ -22,6 +22,7 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	server := rest.MustNewServer(c.RestConf)
+	//server.Use(middleware.NewTraceMiddleware(c).Handle)
 	defer server.Stop()
 
 	handler.RegisterHandlers(server, ctx)
